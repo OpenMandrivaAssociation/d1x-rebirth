@@ -10,7 +10,7 @@
 
 Summary:		The port of Descent 1 for Linux
 Name:			d1x-rebirth
-Version:		0.56
+Version:		0.57
 Release:		%mkrel 1
 License:		GPL
 Group:			Games/Arcade
@@ -91,6 +91,7 @@ scons %{?jobs:-j%{jobs}} \
 	sdl_only=1 \
 	sdlmixer=1 \
 	no_asm=1
+cp d1x-rebirth d1x-rebirth-sdl
 
 # d1x-gl
 scons -c
@@ -98,7 +99,7 @@ scons %{?jobs:-j%{jobs}} \
 	sharepath=%{_datadir}/games/descent2 \
 	sdlmixer=1 \
 	PREFIX=%{buildroot}%{_prefix}
-
+cp d1x-rebirth d1x-rebirth-gl
 %install
 rm -rf %{buildroot}
 # binaries
