@@ -10,7 +10,7 @@
 
 Summary:		The port of Descent 1 for Linux
 Name:			d1x-rebirth
-Version:		0.57
+Version:		0.57.1
 Release:		%mkrel 1
 License:		GPL
 Group:			Games/Arcade
