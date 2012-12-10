@@ -6,28 +6,26 @@
 
 # norootforbuild
 
-%define _prefix	/usr
-
-Summary:		The port of Descent 1 for Linux
-Name:			d1x-rebirth
-Version:		0.57.1
-Release:		%mkrel 1
-License:		GPL
-Group:			Games/Arcade
-URL:			http://www.dxx-rebirth.de/
-Source:			http://www.dxx-rebirth.de/download/dxx/oss/src/%{name}_v%{version}-src.tar.gz
-Source1:		%{name}.png
-Source2:		D2XBDE01.zip
-BuildRoot:		%{_tmppath}/%{name}-%{version}-%{release}-buildroot
+Summary:	The port of Descent 1 for Linux
+Name:		d1x-rebirth
+Version:	0.57.3
+Release:	1
+License:	GPL
+Group:		Games/Arcade
+URL:		http://www.dxx-rebirth.de/
+Source:		http://www.dxx-rebirth.de/download/dxx/oss/src/%{name}_v%{version}-src.tar.gz
+Source1:	%{name}.png
+Source2:	D2XBDE01.zip
 BuildRequires:	dos2unix
 BuildRequires:	gcc-c++
-BuildRequires:	GL-devel
 BuildRequires:	nasm
 BuildRequires:	scons
 BuildRequires:	SDL-devel
 BuildRequires:	SDL_image-devel
 BuildRequires:	SDL_mixer-devel
 BuildRequires:	physfs-devel
+BuildRequires:	pkgconfig(gl)
+BuildRequires:	pkgconfig(glu)
 BuildRequires:	unzip
 Requires:	physfs
 
@@ -44,7 +42,6 @@ To use this package you'll need some datafiles installed in
 Group:		Games/Arcade
 Summary:	Descent 1 for Linux, SDL version
 Requires:	d1x-rebirth = %{version}
-Requires:	SDL
 Conflicts:	d1x-rebirth-gl
 
 %description sdl
@@ -77,11 +74,10 @@ To use this package you'll need some datafiles installed in
 This version uses SDL for Audio and Input/Output and OpenGL for
 graphics rendering.
 
-
 %prep
 %setup -q -n %{name}_v%{version}-src -a2
 dos2unix     d1x.ini *.txt
-%__chmod 644 d1x.ini *.txt
+chmod 644 d1x.ini *.txt
 dos2unix CHANGELOG.txt
 
 %build
@@ -100,23 +96,23 @@ scons %{?jobs:-j%{jobs}} \
 	sdlmixer=1 \
 	PREFIX=%{buildroot}%{_prefix}
 cp d1x-rebirth d1x-rebirth-gl
+
 %install
-rm -rf %{buildroot}
 # binaries
-%__install -dm 755 %{buildroot}%{_prefix}/games/
-%__install -m 755 d1x-rebirth-gl \
+install -dm 755 %{buildroot}%{_prefix}/games/
+install -m 755 d1x-rebirth-gl \
 	%{buildroot}%{_prefix}/games/
-%__install -m 755 d1x-rebirth-sdl \
+install -m 755 d1x-rebirth-sdl \
 	%{buildroot}%{_prefix}/games/
 
-%__install -dm 755 %{buildroot}%{_datadir}/games/descent2
+install -dm 755 %{buildroot}%{_datadir}/games/descent2
 # german translations
-%__install -m 644 D2XBDE01/D2XbDE01/*.txb \
+install -m 644 D2XBDE01/D2XbDE01/*.txb \
 	%{buildroot}%{_datadir}/games/descent2
-%__install -m 644 D2XBDE01/*.txt \
+install -m 644 D2XBDE01/*.txt \
 	%{buildroot}%{_datadir}/games/descent2
 # directory for original descent data
-%__install -dm 755 %{buildroot}%{_datadir}/games/descent2/missions
+install -dm 755 %{buildroot}%{_datadir}/games/descent2/missions
 
 # man-pages
 # %__install -dm 755 %{buildroot}%{_mandir}/man1/
@@ -124,13 +120,13 @@ rm -rf %{buildroot}
 #	%{buildroot}%{_mandir}/man1/
 
 # icon
-%__install -dm 755 %{buildroot}%{_datadir}/pixmaps
-%__install -m 644 %{SOURCE1} \
+install -dm 755 %{buildroot}%{_datadir}/pixmaps
+install -m 644 %{SOURCE1} \
 	%{buildroot}%{_datadir}/pixmaps
 
 # menu
-%__install -dm 755 %{buildroot}%{_datadir}/applications
-%__cat > %{name}-sdl.desktop << EOF
+install -dm 755 %{buildroot}%{_datadir}/applications
+cat > %{name}-sdl.desktop << EOF
 [Desktop Entry]
 Encoding=UTF-8
 Type=Application
@@ -140,10 +136,10 @@ Exec=%{_prefix}/games/d1x-rebirth-sdl
 Icon=%{name}
 Categories=Game;ActionGame;
 EOF
-%__install -m 644 %{name}-sdl.desktop \
+install -m 644 %{name}-sdl.desktop \
 	%{buildroot}%{_datadir}/applications
 
-%__cat > %{name}-gl.desktop << EOF
+cat > %{name}-gl.desktop << EOF
 [Desktop Entry]
 Encoding=UTF-8
 Type=Application
@@ -153,30 +149,23 @@ Exec=%{_prefix}/games/d1x-rebirth-gl
 Icon=%{name}
 Categories=Game;ArcadeGame;
 EOF
-%__install -m 644 %{name}-gl.desktop \
+install -m 644 %{name}-gl.desktop \
 	%{buildroot}%{_datadir}/applications
 
-%clean
-[ -d %{buildroot} -a "%{buildroot}" != "" ] && %__rm -rf %{buildroot}
-
 %files
-%defattr(-,root,root)
 %doc *.txt *.plist *.ini
 %dir %{_datadir}/games/descent2
 %{_datadir}/games/descent2/*.txb
 %{_datadir}/games/descent2/*.txt
 %dir %{_datadir}/games/descent2/missions
-# %{_mandir}/man1/*
 %{_datadir}/pixmaps/%{name}.png
 
 %files sdl
-%defattr(-,root,root)
 %doc COPYING*
 %{_prefix}/games/d1x-rebirth-sdl
 %{_datadir}/applications/%{name}-sdl.desktop
 
 %files gl
-%defattr(-,root,root)
 %doc COPYING*
 %{_prefix}/games/d1x-rebirth-gl
 %{_datadir}/applications/%{name}-gl.desktop
