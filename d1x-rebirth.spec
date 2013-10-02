@@ -6,6 +6,8 @@
 
 # norootforbuild
 
+%define debug_package %{nil}
+
 Summary:	The port of Descent 1 for Linux
 Name:		d1x-rebirth
 Version:	0.58.1
